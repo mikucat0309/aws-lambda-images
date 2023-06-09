@@ -1,0 +1,6 @@
+[submodule "dotnet/aws-lambda-dotnet"]
+	path = dotnet/aws-lambda-dotnet
+	url = https://github.com/aws/aws-lambda-dotnet
+[submodule "dotnet/alrie"]
+	path = dotnet/alrie
+	url = https://github.com/mikucat0309/aws-lambda-runtime-interface-emulator
