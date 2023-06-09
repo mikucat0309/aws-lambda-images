@@ -1,12 +1,11 @@
 ARG VERSION
-FROM --platform=${BUILDPLATFORM} golang:1.20-alpine AS alrie-builder
+FROM --platform=${BUILDPLATFORM} alpine:latest AS alrie-downloader
 
 ARG TARGETARCH
-ENV GOARCH=$TARGETARCH
-ENV CGO_ENABLED=0
-WORKDIR /source
-COPY alrie/ .
-RUN go build -o /app/alrie -ldflags "-s -w" ./cmd/aws-lambda-rie
+RUN apk add --no-cache curl
+RUN if [ "$TARGETARCH" = "arm64" ]; then SUFFIX="-arm64"; fi; \
+    curl -SsL -o /alrie  "https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/latest/download/aws-lambda-rie$SUFFIX"
+RUN chmod +x /alrie
 
 FROM --platform=${BUILDPLATFORM} mcr.microsoft.com/dotnet/sdk:${VERSION}-alpine AS alric-builder
 ARG TARGETARCH
@@ -31,10 +30,10 @@ ENV LAMBDA_RUNTIME_DIR=/var/runtime
 ENV LAMBDA_TASK_ROOT=/var/task
 
 WORKDIR /var/task
-
-COPY --from=alrie-builder /app/alrie /usr/bin/
+COPY --from=alrie-downloader /alrie /usr/bin/
 COPY --from=alric-builder /app ${LAMBDA_RUNTIME_DIR}
 COPY scripts/bootstrap.sh ${LAMBDA_RUNTIME_DIR}
 COPY scripts/lambda-entrypoint.sh /
+RUN apk add --no-cache bash
 
 ENTRYPOINT [ "/lambda-entrypoint.sh" ]

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Origin: https://github.com/aws/aws-lambda-base-images/tree/provided.al2/x86_64
 # Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 

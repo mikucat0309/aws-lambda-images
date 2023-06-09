@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Origin: https://github.com/aws/aws-lambda-base-images/tree/provided.al2/x86_64
 
 # This script is used to locate 2 files in the /var/task folder, where the end-user assembly is located
